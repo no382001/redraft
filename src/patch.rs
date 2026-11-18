@@ -62,7 +62,9 @@ pub fn apply(repo: &Repository, base: Option<&Tree>, diff: &str) -> Result<Oid> 
         if file.old_path.as_ref().is_some_and(|old| *old != new_path) {
             index.remove_path(old_path.as_ref())?;
         }
-        index.add_frombuffer(&index_entry(&new_path, mode), new_content.as_bytes())?;
+        let mut entry = index_entry(&new_path, mode);
+        entry.id = repo.blob(new_content.as_bytes())?;
+        index.add(&entry)?;
     }
 
     Ok(index.write_tree_to(repo)?)
