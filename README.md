@@ -2,6 +2,8 @@
 
 Browse a branch's history in the terminal and rewrite any commit in place, reword its message or edit its diff, with every later commit replayed on top. Comes with a CLI interface, and a TUI. 
 
+![Removing a stray debug print from an old commit: open redraft, pick the commit, delete the line in the editor, and the later commits replay on top](demo/redraft.gif)
+
 ## Why
 
 I use `gitk` every day to look at git history. When cleaning up a branch for a PR I often resort to rebasing and changing the history then force pushing, but rebase conflicts are something I dont want to deal with, nor do I want to deal with having to type all these commands out in the terminal when there is already a way to view the history in `gitk`, its all there, but you cannot edit it for some reason. So this project is a minimal `gitk` clone that you can use to go on a branch, edit the diff by hand, and apply an interactive rebase with a replay strategy if needed for when the rebase is not clean.
