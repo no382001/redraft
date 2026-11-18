@@ -506,20 +506,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gitkit"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "git2",
- "ratatui",
- "regex",
- "serde_json",
- "tempfile",
- "thiserror 2.0.21",
- "unicode-width",
-]
-
-[[package]]
 name = "hashbrown"
 version = "0.17.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1225,6 +1211,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed2bf2547551a7053d6fdfafda3f938979645c44812fbfcda098faae3f1a362d"
 dependencies = [
  "bitflags 2.13.2",
+]
+
+[[package]]
+name = "redraft"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "git2",
+ "ratatui",
+ "regex",
+ "serde_json",
+ "tempfile",
+ "thiserror 2.0.21",
+ "unicode-width",
 ]
 
 [[package]]

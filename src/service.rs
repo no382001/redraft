@@ -14,8 +14,8 @@ use crate::error::{Error, Result, user};
 use crate::model::*;
 use crate::{merge, patch};
 
-const AUDIT_LOG: &str = "gitkit-audit.log";
-const BACKUP_PREFIX: &str = "refs/gitkit-backup/";
+const AUDIT_LOG: &str = "redraft-audit.log";
+const BACKUP_PREFIX: &str = "refs/redraft-backup/";
 
 pub struct GitService {
     path: PathBuf,
@@ -384,10 +384,10 @@ fn finish_rewrite(
 
     let backup_ref = create_backup_ref(repo, rw, kind)?;
 
-    if let Err(e) = repo.reference_matching(&rw.branch_ref, new_tip, true, rw.old_tip.id(), &format!("gitkit: {kind}")) {
+    if let Err(e) = repo.reference_matching(&rw.branch_ref, new_tip, true, rw.old_tip.id(), &format!("redraft: {kind}")) {
         if matches!(e.code(), ErrorCode::Modified | ErrorCode::NotFound) {
             return user(
-                "The branch moved while gitkit was working. Aborted without changing it; \
+                "The branch moved while redraft was working. Aborted without changing it; \
                  a backup of the old tip was still recorded, but nothing else happened.",
             );
         }
@@ -424,7 +424,7 @@ fn create_backup_ref(repo: &Repository, rw: &RewritePlan, kind: &str) -> Result<
     let base = format!("{BACKUP_PREFIX}{}-{}", rw.branch_name.replace(['/', ' '], "-"), Utc::now().timestamp());
     for n in 1.. {
         let name = if n == 1 { base.clone() } else { format!("{base}-{n}") };
-        match repo.reference(&name, rw.old_tip.id(), false, &format!("gitkit: backup before {kind}")) {
+        match repo.reference(&name, rw.old_tip.id(), false, &format!("redraft: backup before {kind}")) {
             Ok(_) => return Ok(name),
             Err(e) if e.code() == ErrorCode::Exists => continue,
             Err(e) => return Err(e.into()),

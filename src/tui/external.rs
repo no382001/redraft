@@ -15,7 +15,7 @@ pub struct External {
 
 impl External {
     pub fn new(repo: &Path) -> Self {
-        Self { repo: repo.to_path_buf(), temp_dir: std::env::temp_dir().join(format!("gitkit-{}", std::process::id())) }
+        Self { repo: repo.to_path_buf(), temp_dir: std::env::temp_dir().join(format!("redraft-{}", std::process::id())) }
     }
 
     pub fn edit(&self, term: &mut DefaultTerminal, text: &str, file_name: &str) -> Option<String> {

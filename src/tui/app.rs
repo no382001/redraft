@@ -6,8 +6,8 @@ use ratatui::layout::{Position, Rect};
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::text::{Line, Span};
 
-use gitkit::model::{CommitInfo, DiffConflict, Log, Resolutions, Rewrite};
-use gitkit::{Error, GitService};
+use redraft::model::{CommitInfo, DiffConflict, Log, Resolutions, Rewrite};
+use redraft::{Error, GitService};
 
 use super::external::External;
 use super::popup::Popup;
@@ -426,7 +426,7 @@ impl App {
             "{}\n\n\
              # Rewording {} on {branch}. Lines starting with '#' are ignored,\n\
              # and an empty message aborts the reword. Every later commit on the branch\n\
-             # is rebuilt (new shas, same trees); the old tip is kept under refs/gitkit-backup/.\n",
+             # is rebuilt (new shas, same trees); the old tip is kept under refs/redraft-backup/.\n",
             c.message.trim_end_matches('\n'),
             c.short_sha
         );
@@ -676,8 +676,8 @@ impl App {
                 if old != new {
                     lines.push(Line::raw(sanitize(&format!(
                         "  \"{}\" → \"{}\"",
-                        gitkit::model::first_line(&old),
-                        gitkit::model::first_line(&new)
+                        redraft::model::first_line(&old),
+                        redraft::model::first_line(&new)
                     ))));
                 }
             }
@@ -720,7 +720,7 @@ impl App {
             "  q Ctrl+C        quit",
             "",
             "Rewrites rebuild every later commit on the branch. The old tip is always kept",
-            "under refs/gitkit-backup/, so `git reset --hard <backup ref>` undoes one.",
+            "under refs/redraft-backup/, so `git reset --hard <backup ref>` undoes one.",
             "The editor comes from GIT_EDITOR, core.editor, VISUAL or EDITOR, like git.",
         ];
         let lines = HELP

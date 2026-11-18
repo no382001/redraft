@@ -5,11 +5,11 @@ use std::process::ExitCode;
 use ratatui::crossterm::event::{DisableMouseCapture, EnableMouseCapture};
 use ratatui::crossterm::execute;
 
-use gitkit::GitService;
+use redraft::GitService;
 
 mod tui;
 
-const USAGE: &str = "usage: gitkit [repo]
+const USAGE: &str = "usage: redraft [repo]
 
 Browse a branch's history and rewrite it: reword any commit's message or edit
 its diff in your editor, with every later commit replayed on top.
@@ -22,11 +22,11 @@ fn main() -> ExitCode {
         return ExitCode::SUCCESS;
     }
     if args.iter().any(|a| a == "-V" || a == "--version") {
-        println!("gitkit {}", env!("CARGO_PKG_VERSION"));
+        println!("redraft {}", env!("CARGO_PKG_VERSION"));
         return ExitCode::SUCCESS;
     }
     if let Some(bad) = args.iter().find(|a| a.starts_with('-')) {
-        eprintln!("gitkit: unknown option {bad}\n\n{USAGE}");
+        eprintln!("redraft: unknown option {bad}\n\n{USAGE}");
         return ExitCode::from(2);
     }
 
@@ -34,13 +34,13 @@ fn main() -> ExitCode {
     let root = match GitService::discover(&path) {
         Ok(root) => root,
         Err(e) => {
-            eprintln!("gitkit: {e}");
+            eprintln!("redraft: {e}");
             return ExitCode::FAILURE;
         }
     };
 
     if !std::io::stdin().is_terminal() || !stdout().is_terminal() {
-        eprintln!("gitkit: needs an interactive terminal.");
+        eprintln!("redraft: needs an interactive terminal.");
         return ExitCode::FAILURE;
     }
 
@@ -53,7 +53,7 @@ fn main() -> ExitCode {
     match result {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
-            eprintln!("gitkit: {e}");
+            eprintln!("redraft: {e}");
             ExitCode::FAILURE
         }
     }

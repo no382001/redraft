@@ -44,7 +44,7 @@ pub fn render(app: &App, f: &mut Frame) {
 
 fn render_header(app: &App, f: &mut Frame, rect: Rect) {
     let mut spans = vec![
-        Span::styled(" gitkit ", Style::new().fg(ACCENT).add_modifier(Modifier::BOLD)),
+        Span::styled(" redraft ", Style::new().fg(ACCENT).add_modifier(Modifier::BOLD)),
         Span::raw(format!(" {}", app.repo_name)),
     ];
     if let Some(b) = &app.branch {

@@ -3,8 +3,8 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
-use gitkit::model::Resolutions;
-use gitkit::{Error, GitService};
+use redraft::model::Resolutions;
+use redraft::{Error, GitService};
 
 struct Repo {
     _dir: tempfile::TempDir,
@@ -268,7 +268,7 @@ fn diff_edit_refuses_overlapping_local_changes_before_touching_anything() {
     let (one, diff) = r.edited_root_diff("+b\n", "+B\n");
     assert!(user_error(r.svc().edit_diff(&one, &diff, None, &no_resolutions(), false)).contains("f.txt"));
     assert_eq!(r.rev("main"), head);
-    assert_eq!(r.sh("git for-each-ref refs/gitkit-backup"), "");
+    assert_eq!(r.sh("git for-each-ref refs/redraft-backup"), "");
     assert_eq!(r.read("f.txt"), "local\n");
 }
 
