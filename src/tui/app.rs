@@ -699,11 +699,11 @@ impl App {
     fn show_help(&mut self, term: &mut DefaultTerminal) {
         const HELP: &[&str] = &[
             "Navigation",
-            "  ↑ ↓  j k        move selection / scroll diff",
+            "  j k  up down    move selection / scroll diff",
             "  PgUp PgDn space page            g G  Home End   top / bottom",
             "  Ctrl+D Ctrl+U   half page",
-            "  enter tab → l   focus the diff        esc ← h   back to the list",
-            "  ← → h l         pan the diff sideways when it has focus",
+            "  enter tab l     focus the diff        esc h      back to the list",
+            "  h l  left right pan the diff sideways when it has focus",
             "  n p             next / previous commit from anywhere",
             "  < >             resize the panes (or drag the divider)",
             "  mouse           click to select, wheel to scroll",
@@ -750,7 +750,7 @@ impl App {
     }
 
     fn show_text(&mut self, term: &mut DefaultTerminal, title: &str, lines: Vec<Line<'static>>) {
-        let mut popup = Popup::new(title, lines, "↑↓ scroll · q close");
+        let mut popup = Popup::new(title, lines, "j/k scroll · q close");
         loop {
             if self.draw(term, Some(&popup)).is_err() {
                 return;

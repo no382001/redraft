@@ -49,20 +49,20 @@ fn render_header(app: &App, f: &mut Frame, rect: Rect) {
     ];
     if let Some(b) = &app.branch {
         spans.push(Span::raw("  "));
-        spans.push(Span::styled(format!("⎇ {b}"), Style::new().fg(Color::Magenta).add_modifier(Modifier::BOLD)));
+        spans.push(Span::styled(b.clone(), Style::new().fg(Color::Magenta).add_modifier(Modifier::BOLD)));
     }
     if let Some(r) = app.log.as_ref().and_then(|l| l.remote.as_ref()) {
         let mut parts = Vec::new();
         if let Some(a) = r.ahead.filter(|a| *a > 0) {
-            parts.push(format!("↑{a}"));
+            parts.push(format!("{a} ahead"));
         }
         if let Some(b) = r.behind.filter(|b| *b > 0) {
-            parts.push(format!("↓{b}"));
+            parts.push(format!("{b} behind"));
         }
         let (text, color) = if parts.is_empty() {
-            (format!("✓ {}", r.branch), Color::Green)
+            (format!("in sync with {}", r.branch), Color::Green)
         } else {
-            (format!("{} {}", parts.join(" "), r.branch), Color::Yellow)
+            (format!("{} {}", parts.join(", "), r.branch), Color::Yellow)
         };
         spans.push(Span::raw("  "));
         spans.push(Span::styled(text, Style::new().fg(color)));
@@ -166,9 +166,9 @@ fn render_footer(app: &App, f: &mut Frame, rect: Rect) {
     let hints: &[(&str, &str)] = if app.searching {
         &[("type", "filter"), ("enter", "keep"), ("esc", "clear")]
     } else if app.focus == Pane::List {
-        &[("↑↓", "move"), ("tab", "diff"), ("r", "reword"), ("e", "edit diff"), ("o", "pager"), ("b", "branch"), ("/", "search"), ("H", "history"), ("?", "help"), ("q", "quit")]
+        &[("j/k", "move"), ("tab", "diff"), ("r", "reword"), ("e", "edit diff"), ("o", "pager"), ("b", "branch"), ("/", "search"), ("H", "history"), ("?", "help"), ("q", "quit")]
     } else {
-        &[("↑↓", "scroll"), ("←→", "pan"), ("tab", "commits"), ("r", "reword"), ("e", "edit diff"), ("o", "pager"), ("?", "help"), ("q", "quit")]
+        &[("j/k", "scroll"), ("h/l", "pan"), ("tab", "commits"), ("r", "reword"), ("e", "edit diff"), ("o", "pager"), ("?", "help"), ("q", "quit")]
     };
 
     let mut spans = vec![Span::raw(" ")];
