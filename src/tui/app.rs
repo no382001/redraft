@@ -210,7 +210,7 @@ impl App {
     }
 
     pub fn body_height(&self) -> usize {
-        self.area.height.saturating_sub(2) as usize
+        self.area.height.saturating_sub(4) as usize
     }
 
     pub fn two_panes(&self) -> bool {
@@ -337,13 +337,17 @@ impl App {
                 }
             }
             MouseEventKind::Down(MouseButton::Left) => {
-                if self.two_panes() && mouse.column == self.list_width() && mouse.row > 0 {
+                let list = self.list_rect();
+                let on_divider = mouse.column + 1 == list.right() || mouse.column == list.right();
+                if self.two_panes() && on_divider && list.contains(Position::new(list.x, mouse.row)) {
                     self.dragging_split = true;
                 } else if in_list {
                     self.focus = Pane::List;
-                    let row = (mouse.row - self.list_rect().y) as usize + self.list_top;
-                    if row < self.filtered.len() {
-                        self.cursor = row;
+                    if mouse.row > list.y && mouse.row + 1 < list.bottom() {
+                        let row = (mouse.row - list.y - 1) as usize + self.list_top;
+                        if row < self.filtered.len() {
+                            self.cursor = row;
+                        }
                     }
                 } else if in_diff {
                     self.focus = Pane::Diff;
@@ -370,7 +374,7 @@ impl App {
         let body = Rect::new(0, 1, self.area.width, self.area.height.saturating_sub(2));
         match (self.two_panes(), self.focus) {
             (true, _) => {
-                let x = self.list_width() + 1;
+                let x = self.list_width();
                 Rect { x, width: body.width.saturating_sub(x), ..body }
             }
             (false, Pane::Diff) => body,

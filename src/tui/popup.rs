@@ -1,10 +1,11 @@
 use ratatui::Frame;
 use ratatui::layout::Rect;
-use ratatui::style::{Color, Modifier, Style};
+use ratatui::style::{Modifier, Style};
 use ratatui::text::Line;
-use ratatui::widgets::{Block, Clear, Paragraph};
+use ratatui::widgets::{Block, BorderType, Clear, Paragraph};
 
 use super::text::width;
+use super::ui::{ACCENT, SELECTED};
 
 pub struct Popup {
     title: String,
@@ -58,12 +59,12 @@ impl Popup {
 
     pub fn render(&self, f: &mut Frame) {
         let rect = self.rect(f.area());
-        let border = Style::new().fg(Color::Cyan);
+        let border = Style::new().fg(ACCENT);
         let block = Block::bordered()
+            .border_type(BorderType::Rounded)
             .border_style(border)
             .title(Line::styled(format!(" {} ", self.title), border.add_modifier(Modifier::BOLD)))
-            .title_bottom(Line::styled(format!(" {} ", self.footer), Style::new().add_modifier(Modifier::DIM)).right_aligned())
-            .style(Style::new().bg(Color::Indexed(235)));
+            .title_bottom(Line::styled(format!(" {} ", self.footer), Style::new().add_modifier(Modifier::DIM)).right_aligned());
 
         let inner_width = rect.width.saturating_sub(4) as usize;
         let lines: Vec<Line> = self
@@ -76,7 +77,7 @@ impl Popup {
                     let mut l = l.clone();
                     let pad = inner_width.saturating_sub(l.width());
                     l.push_span(" ".repeat(pad));
-                    l.style(Style::new().bg(Color::Indexed(238)).add_modifier(Modifier::BOLD))
+                    l.style(SELECTED)
                 } else {
                     l.clone()
                 }
