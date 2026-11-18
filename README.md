@@ -11,10 +11,18 @@ I use `gitk` every day to look at git history. When cleaning up a branch for a P
 ## Quickstart
 
 ```bash
-cargo install --path .
+cargo install redraft --locked
 cd some/repo
 redraft
 ```
+
+Prebuilt binaries for Linux, macOS and Windows are on the [releases page](https://github.com/no382001/redraft/releases), or install the latest one with:
+
+```bash
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/no382001/redraft/releases/latest/download/redraft-installer.sh | sh
+```
+
+Building from source needs a C compiler, since libgit2 is compiled in.
 
 That opens the commit list for the checked-out branch, with the selected commit's diff beside it. Press `e` to edit that diff in your editor, `r` to reword the message, and `?` for every key.
 

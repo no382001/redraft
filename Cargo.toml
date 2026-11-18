@@ -5,7 +5,11 @@ edition = "2024"
 rust-version = "1.85"
 description = "Browse a branch's history and rewrite it: reword any commit or edit its diff, with every later commit replayed on top."
 license = "MIT"
-publish = false
+repository = "https://github.com/no382001/redraft"
+readme = "README.md"
+keywords = ["git", "rebase", "tui", "history", "cli"]
+categories = ["command-line-utilities", "development-tools"]
+exclude = ["demo/", "justfile", ".github/", "dist-workspace.toml"]
 
 [dependencies]
 chrono = { version = "0.4.45", default-features = false, features = ["clock", "std"] }
@@ -23,3 +27,7 @@ tempfile = "3.27.0"
 lto = true
 codegen-units = 1
 strip = true
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
