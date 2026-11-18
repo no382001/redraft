@@ -1,0 +1,24 @@
+[package]
+name = "gitkit"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Browse a branch's history and rewrite it: reword any commit or edit its diff, with every later commit replayed on top."
+license = "MIT"
+publish = false
+
+[dependencies]
+chrono = { version = "0.4.45", default-features = false, features = ["clock", "std"] }
+git2 = { version = "0.21.0", default-features = false, features = ["vendored-libgit2"] }
+ratatui = "0.30.2"
+regex = "1.13.2"
+serde_json = "1.0.154"
+thiserror = "2.0.21"
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
