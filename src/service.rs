@@ -83,6 +83,13 @@ impl GitService {
         Ok(Log { remote: remote_status(&repo, &name, tip), branch: name, commits })
     }
 
+    pub fn resolve(&self, rev: &str) -> Result<String> {
+        let repo = self.open()?;
+        let obj = repo.revparse_single(rev).map_err(|_| Error::User(format!("Commit not found: {rev}")))?;
+        let commit = obj.peel_to_commit().map_err(|_| Error::User(format!("Not a commit: {rev}")))?;
+        Ok(commit.id().to_string())
+    }
+
     pub fn diff(&self, sha: &str) -> Result<String> {
         let repo = self.open()?;
         let commit = find_commit(&repo, sha)?;
