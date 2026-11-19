@@ -119,7 +119,14 @@ fn render_list(app: &App, f: &mut Frame, rect: Rect) {
             Span::styled(format!("{:>4}", relative_date(&c.author_date, now)), DIM),
             Span::raw("  "),
             Span::styled(fit(&badge_text, badge_w), Style::new().fg(Color::Magenta)),
-            Span::styled(fit(c.subject(), subject_w - badge_w), if selected { Style::new().add_modifier(Modifier::BOLD) } else { Style::new() }),
+            Span::styled(
+                fit(c.subject(), subject_w - badge_w),
+                match (selected, c.editable) {
+                    (true, _) => Style::new().add_modifier(Modifier::BOLD),
+                    (false, true) => Style::new(),
+                    (false, false) => DIM,
+                },
+            ),
         ];
         if author_w > 0 {
             spans.push(Span::styled(format!(" {}", fit(&c.author_name, author_w)), Style::new().fg(Color::Blue)));

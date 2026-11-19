@@ -13,7 +13,7 @@ pub const COMMANDS: &[&str] = &["log", "show", "reword", "edit", "history"];
 pub const EXIT_CONFLICT: u8 = 3;
 
 pub const USAGE: &str = "Commands (for scripts and agents; output is JSON unless noted):
-  redraft log [-b BRANCH]                    commits on the branch, newest first
+  redraft log [-b BRANCH]                    commits on the branch, newest first (editable: on first-parent history)
   redraft show REV                           the commit's own diff (plain text)
   redraft reword REV (-m MSG | -F FILE) [-b BRANCH]
   redraft edit REV --diff FILE [--resolve FILE] [--auto-resolve] [-b BRANCH]
@@ -171,6 +171,7 @@ fn commit_json(c: &CommitInfo) -> Value {
         "shortSha": c.short_sha,
         "parents": c.parents,
         "isMerge": c.is_merge,
+        "editable": c.editable,
         "author": { "name": c.author_name, "email": c.author_email },
         "date": c.author_date.to_rfc3339(),
         "subject": c.subject(),

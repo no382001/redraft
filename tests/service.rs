@@ -112,13 +112,19 @@ fn branches_and_log() {
 }
 
 #[test]
-fn log_follows_first_parent_and_flags_merges() {
+fn log_includes_merged_commits_and_flags_editable() {
     let r = Repo::new();
     r.sh("git checkout -q -b side main~1 && echo s > s.txt && git add s.txt && git commit -qm side && git checkout -q main && git merge -q --no-ff -m merged side");
     let log = r.svc().log(None).unwrap();
-    let subjects: Vec<_> = log.commits.iter().map(|c| c.subject().to_string()).collect();
-    assert_eq!(subjects, ["merged", "three", "two", "one"]);
+    let mut subjects: Vec<_> = log.commits.iter().map(|c| c.subject().to_string()).collect();
+    assert_eq!(subjects.remove(0), "merged");
+    subjects.sort();
+    assert_eq!(subjects, ["one", "side", "three", "two"]);
     assert!(log.commits[0].is_merge);
+    for c in &log.commits {
+        assert_eq!(c.editable, c.subject() != "side", "{}", c.subject());
+    }
+    assert!(r.svc().reword(&r.rev("side"), "x", None).is_err());
 }
 
 #[test]

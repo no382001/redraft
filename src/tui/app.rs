@@ -14,6 +14,8 @@ use super::popup::Popup;
 use super::text::{clean_message, has_conflict_markers, is_conflict_marker, sanitize};
 use super::ui;
 
+const NOT_EDITABLE: &str = "This commit came in through a merge; only commits on the branch's first-parent history can be rewritten.";
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Pane {
     List,
@@ -181,6 +183,9 @@ impl App {
         lines.push(Line::raw(format!("Date:   {} ({age})", c.author_date.with_timezone(&chrono::Local).format("%Y-%m-%d %H:%M"))));
         if c.is_merge {
             lines.push(Line::styled("Merge:  diff shown against the first parent", Style::new().add_modifier(Modifier::DIM)));
+        }
+        if !c.editable {
+            lines.push(Line::styled("Note:   came in through a merge; only first-parent commits can be rewritten", Style::new().add_modifier(Modifier::DIM)));
         }
         lines.push(Line::raw(""));
         for l in c.message.trim_end_matches('\n').split('\n') {
@@ -421,6 +426,9 @@ impl App {
 
     fn reword(&mut self, term: &mut DefaultTerminal) {
         let (Some(c), Some(branch)) = (self.selected().cloned(), self.branch.clone()) else { return };
+        if !c.editable {
+            return self.error(NOT_EDITABLE);
+        }
 
         let template = format!(
             "{}\n\n\
@@ -451,6 +459,9 @@ impl App {
 
     fn edit_diff(&mut self, term: &mut DefaultTerminal) {
         let (Some(c), Some(branch)) = (self.selected().cloned(), self.branch.clone()) else { return };
+        if !c.editable {
+            return self.error(NOT_EDITABLE);
+        }
 
         let original = match self.git.diff(&c.sha) {
             Ok(d) => d,

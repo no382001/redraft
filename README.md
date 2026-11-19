@@ -29,6 +29,7 @@ That opens the commit list for the checked-out branch, with the selected commit'
 ## How a rewrite works
 
 - Only the first-parent chain from the edited commit to the branch tip is rebuilt. Authors, committers and dates are kept
+- The list shows the full history, including commits that came in through merges. Those are dimmed and can't be rewritten, since they aren't on the first-parent chain.
 - A reword keeps every tree as it was, so it can't conflict.
 - An edited diff is applied to the commit's parent, then each later commit is cherry-picked onto the new one with a 3-way merge. On a conflict you pick per file: unify, yours, theirs, or edit by hand. You can also auto-resolve every file that merges cleanly.
 - The branch only moves once the whole chain has replayed so aborting leaves it as it was.

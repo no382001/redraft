@@ -71,12 +71,19 @@ impl GitService {
 
         let mut commits = Vec::new();
         if let Some(tip) = tip {
+            let mut mainline = HashSet::new();
+            let mut cur = Some(repo.find_commit(tip)?);
+            while let Some(c) = cur {
+                mainline.insert(c.id());
+                cur = c.parents().next();
+            }
+
             let mut walk = repo.revwalk()?;
             walk.push(tip)?;
-            walk.simplify_first_parent()?;
             walk.set_sorting(Sort::TOPOLOGICAL | Sort::TIME)?;
             for oid in walk {
-                commits.push(commit_info(&repo.find_commit(oid?)?));
+                let oid = oid?;
+                commits.push(commit_info(&repo.find_commit(oid)?, mainline.contains(&oid)));
             }
         }
 
@@ -267,7 +274,7 @@ fn remote_status(repo: &Repository, branch: &str, tip: Option<Oid>) -> Option<Re
     Some(RemoteStatus { branch: name, sha: sha.map(|s| s.to_string()), url, ahead, behind })
 }
 
-fn commit_info(c: &Commit) -> CommitInfo {
+fn commit_info(c: &Commit, editable: bool) -> CommitInfo {
     let author = c.author();
     let when = author.when();
     let offset = FixedOffset::east_opt(when.offset_minutes() * 60).unwrap_or(FixedOffset::east_opt(0).unwrap());
@@ -277,6 +284,7 @@ fn commit_info(c: &Commit) -> CommitInfo {
         sha: c.id().to_string(),
         short_sha: short(c.id()),
         is_merge: parents.len() > 1,
+        editable,
         parents,
         author_name: String::from_utf8_lossy(author.name_bytes()).into_owned(),
         author_email: String::from_utf8_lossy(author.email_bytes()).into_owned(),

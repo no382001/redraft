@@ -12,6 +12,7 @@ pub struct CommitInfo {
     pub author_date: DateTime<FixedOffset>,
     pub message: String,
     pub is_merge: bool,
+    pub editable: bool,
 }
 
 impl CommitInfo {
