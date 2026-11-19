@@ -776,7 +776,7 @@ impl App {
             if self.draw(term, Some(&popup)).is_err() {
                 return;
             }
-            let Some(key) = next_key() else { continue };
+            let Some(key) = next_key() else { return };
             let visible = popup.visible_rows(self.area) as isize;
             match key.code {
                 KeyCode::Esc | KeyCode::Enter | KeyCode::Char('q' | '?' | 'H') => return,
@@ -834,9 +834,12 @@ impl App {
 }
 
 fn next_key() -> Option<KeyEvent> {
-    match event::read().ok()? {
-        Event::Key(k) if k.kind == KeyEventKind::Press => Some(k),
-        _ => None,
+    loop {
+        if let Event::Key(k) = event::read().ok()? {
+            if k.kind == KeyEventKind::Press {
+                return Some(k);
+            }
+        }
     }
 }
 
