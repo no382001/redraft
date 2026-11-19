@@ -1,6 +1,6 @@
 [package]
 name = "redraft"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.85"
 description = "Browse a branch's history and rewrite it: reword any commit or edit its diff, with every later commit replayed on top."
